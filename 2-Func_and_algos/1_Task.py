@@ -28,12 +28,9 @@
 # 2. Проверяем наличие заглавных, строчных букв и цифр через методы строк: `isupper()`, `islower()` и `isdigit()`.  
 # 3. Пароль надёжный только если все условия одновременно выполнены.
 
-_ENG_ALPHABET_UPPER = 'abcdefghijklmnopqrstuvwxyz'
-_ENG_ALPHABET_LOWER = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-_NUMS = '0123456789'
+import string
 
-# Ищет хотя бы одно совпадение символа word с 
-# перечнем list
+# Ищет хотя бы одно совпадение символа word с перечнем list
 def is_letter_in_list(word: str, list: str) -> bool:
     for i in word:
         if i in list:
@@ -51,14 +48,14 @@ def is_letter_in_list(word: str, list: str) -> bool:
 def is_password_good(password):
     if len(password) < 8:
         return False
-    
-    if not is_letter_in_list(password, _ENG_ALPHABET_UPPER):
+
+    if not is_letter_in_list(password, string.ascii_uppercase):
         return False
     
-    if not is_letter_in_list(password, _ENG_ALPHABET_LOWER):
+    if not is_letter_in_list(password, string.ascii_lowercase):
         return False
     
-    if not is_letter_in_list(password, _NUMS):
+    if not is_letter_in_list(password, string.digits):
         return False
     
     return True
@@ -67,6 +64,8 @@ def is_password_good(password):
 def main():
     print(is_password_good('aabbCC11OP'))  # True
     print(is_password_good('abC1pu'))      # False
+    print(is_password_good('ФЗ-123456'))   # False
+    print(is_password_good('ФZ-l23456'))   # True
 
 if __name__ == "__main__":
 	main() 

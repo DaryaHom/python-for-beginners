@@ -24,38 +24,59 @@
 # - Ошибки выводятся через `print()`, но функции всегда возвращают число (баланс).
 
 from datetime import datetime, time
-import pytz                           # pip install pytz==2025.2
+from decimal import *
+import pytz  # pip install pytz==2025.2
 
 _MORNING_START = time.fromisoformat('06:00')
-_MORNING_END = time.fromisoformat('11:59')
+_MORNING_END   = time.fromisoformat('11:59')
 
-_DAY_START = time.fromisoformat('12:00')
-_DAY_END = time.fromisoformat('17:59')
+_DAY_START     = time.fromisoformat('12:00')
+_DAY_END       = time.fromisoformat('17:59')
 
 _EVENING_START = time.fromisoformat('18:00')
-_EVENING_END = time.fromisoformat('23:59')
+_EVENING_END   = time.fromisoformat('23:59')
 
-def greet_client(first_name, last_name):
-    moscow_time = datetime.now(pytz.timezone('Europe/Moscow')).time()
+_MOSCOW_TIMEZONE = 'Europe/Moscow'
 
-    greet = 'Доброй ночи'
-    if _MORNING_START <= moscow_time <= _MORNING_END:
-        greet = 'Доброе утро' 
-    elif _DAY_START <= moscow_time <= _DAY_END:
-        greet = 'Добрый день'
-    elif _EVENING_START <= moscow_time <= _EVENING_END:
-        greet = 'Добрый вечер'
 
-    print(f'{greet}, {first_name} {last_name}!')
+def greet_client(first_name: str, last_name: str):
+    if not isinstance(first_name, str) \
+            or not isinstance(last_name, str):
+        print('Ошибка: некорректный тип данных')
+        return
     
-def deposit(balance, amount):
+    moscow_time = datetime.now(pytz.timezone(_MOSCOW_TIMEZONE)).time()
+
+    greeting = 'Доброй ночи'
+    if _MORNING_START <= moscow_time <= _MORNING_END:
+        greeting = 'Доброе утро' 
+    elif _DAY_START <= moscow_time <= _DAY_END:
+        greeting = 'Добрый день'
+    elif _EVENING_START <= moscow_time <= _EVENING_END:
+        greeting = 'Добрый вечер'
+
+    print(f'{greeting}, {first_name} {last_name}!')
+    
+
+def deposit(balance: Decimal, amount: Decimal) -> Decimal:
+    if not isinstance(balance, Decimal) \
+        or not isinstance(amount, Decimal):
+        print('Ошибка: некорректный тип данных')
+        return
+          
     if amount > 0:
         return balance+amount
     
     print('Ошибка: сумма пополнения должна быть положительной.')
     return balance
 
-def withdraw(balance, amount):
+
+def withdraw(balance: Decimal, amount: Decimal) -> Decimal:
+    if not isinstance(balance, Decimal) \
+        or not isinstance(amount, Decimal):
+        print('Ошибка: некорректный тип данных')
+        return
+    
     if amount < 0:
         print('Ошибка: сумма снятия должна быть положительной.')
         return balance
@@ -63,18 +84,19 @@ def withdraw(balance, amount):
         print('Ошибка: недостаточно средств на счёте.')
         return balance
     
-    return balance - amount 
+    return balance-amount
 
 
 def main():
     greet_client("Анна","Петрова")
 
-    print(deposit(1000, 500))   # 1500
-    print(deposit(1000, -200))  # Ошибка: сумма пополнения должна быть положительной. 1000
+    print(deposit(Decimal('1000'), Decimal('500')))   # 1500
+    print(deposit(Decimal('1500'), Decimal('5.28')))  # 1505.28
+    print(deposit(Decimal('1000'), Decimal('-200')))  # Ошибка: сумма пополнения должна быть положительной. 1000
 
-    print(withdraw(1000, 300))  # 700
-    print(withdraw(1000, 1500)) # Ошибка: недостаточно средств на счёте. 1000
-    print(withdraw(1000, -100)) # Ошибка: сумма снятия должна быть положительной. 1000
+    print(withdraw(Decimal('1000'), Decimal('300')))  # 700
+    print(withdraw(Decimal('1000'), Decimal('1500'))) # Ошибка: недостаточно средств на счёте. 1000
+    print(withdraw(Decimal('1000'), Decimal('-100'))) # Ошибка: сумма снятия должна быть положительной. 1000
 
 
 if __name__ == "__main__":
