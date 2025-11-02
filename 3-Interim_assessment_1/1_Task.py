@@ -5,7 +5,7 @@
 
 Напишите функцию is_magic(date), которая принимает в качестве аргумента 
 строковое представление корректной даты и возвращает:
-- True , если дата является магической
+- True, если дата является магической
 - False — в противном случае
 
 Пример использования:
@@ -35,20 +35,17 @@ from datetime import datetime
     
 
 def is_magic(date: str) -> bool:
-    date_parts = date.split('.')
+    try:
+        date_parts = list(map(int, date.replace(' ', '', -1).split('.')))
+    except ValueError:
+        print(f'non-numeric date format: {date}')
+        return False
 
     if len(date_parts) != 3:
         print(f'invalid date format: {date}')
         return False
     
-    nums = []
-    try:
-        nums = [int(i.replace(' ', '', -1)) for i in date_parts]
-    except ValueError:
-        print(f'non-numeric date format: {date}')
-        return False
-    
-    day, month, year = nums
+    day, month, year = date_parts
     year = year % 100 if year > 1000 else year  # Нормализуем год
     date_normalized = f'{day}.{month}.{year}' 
 

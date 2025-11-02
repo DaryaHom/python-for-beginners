@@ -47,7 +47,7 @@ def main():
     res = set()
     while len(res) < 100:
         res.add(generate_pass())
-    print(res)
+    print(*res, sep='\n')
 
 if __name__ == "__main__":
 	main() 
