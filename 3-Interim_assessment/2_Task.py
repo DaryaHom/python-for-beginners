@@ -41,7 +41,7 @@ Python просто не добавит дубликат.
 import random
 
 def generate_pass():
-     return random.randint(1000000, 9000000) 
+     return random.randint(1_000_000, 9_999_999) 
 
 def main():
     res = set()

@@ -46,8 +46,7 @@ def is_magic(date: str) -> bool:
         return False
     
     day, month, year = date_parts
-    year = year % 100 if year > 1000 else year  # Нормализуем год
-    date_normalized = f'{day}.{month}.{year}' 
+    date_normalized = f'{day}.{month}.{year % 100}' # Нормализуем год
 
     try:
         datetime.strptime(date_normalized, '%d.%m.%y')
@@ -66,6 +65,8 @@ def main():
     print(is_magic('11.06.1960')) # False
     print(is_magic('10.VI.1960')) # non-numeric date format: 10.VI.1960  False
     print(is_magic('80.01.80'))   # incorrect date: 80.1.80  False
+    print(is_magic('11.01.11'))
+    print(is_magic('11.01.1'))
 
 
 if __name__ == "__main__":
