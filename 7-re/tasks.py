@@ -98,7 +98,7 @@ def is_login_correct(login: str) -> bool:
     return re.fullmatch(r'(?!.*[._]{2})[A-Za-z]{1}[A-Za-z._]{1,18}[A-Za-z]{1}', login) is not None
 
 """
-Задание #6. 
+Задание №6. 
 Условие:
 Начинается с #
 Далее 3 или 6 шестнадцатеричных символов (0-9, a-f, A-F)

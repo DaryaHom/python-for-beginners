@@ -11,9 +11,9 @@ from tasks import is_inn_correct, BankAccount, is_login_correct, is_hex_color_co
         ("1234567890123", False),
         ("12345678901a", False),
         ("1234 567890", False),
-        ("", False),
         (" 1234567890", False),
         ("1234567890 ", False),
+        ("", False),
     ]
 )
 def test_is_inn_correct(inn, is_correct):
