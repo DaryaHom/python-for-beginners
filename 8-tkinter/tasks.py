@@ -82,11 +82,18 @@ def update_data():
     if not name:
         messagebox.showerror("Ошибка", "Введите новое имя")
         return
-    age = age_entry.get()
-    if not age:
+    age_str = age_entry.get()
+    if not age_str:
         messagebox.showerror("Ошибка", "Введите новый возраст")
         return
-    cur.execute("UPDATE users SET name = %s, age = %s WHERE id=%s", (name, age, row_id))
+    try: 
+        age = int(age_str) 
+        if age < 0 or age > 150: 
+            messagebox.showerror("Ошибка", "Введите корректный возраст (0-150)") 
+            return
+    except ValueError: 
+        messagebox.showerror("Ошибка", "Возраст должен быть числом")
+    cur.execute("UPDATE users SET name = %s, age = %s WHERE id=%s", (name, age_str, row_id))
     conn.commit()
     refresh_table()
     clear_fields()
@@ -171,7 +178,11 @@ def show_stat():
 def sort(table, col, descending):
     """Сортировка по клику по колонке"""
     data = [(table.set(item, col), item) for item in table.get_children("")]
-    data.sort(key=lambda x: int(x[0]), reverse=descending)
+    # Пробуем сортировать как числа, если не получается - как строки 
+    try:
+        data.sort(key=lambda x: int(x[0]), reverse=descending)
+    except ValueError: 
+        data.sort(key=lambda x: x[0].lower() if isinstance(x[0], str) else x[0], reverse=descending)
     for index,  (_, item) in enumerate(data):
         table.move(item, "", index)
     table.heading(col, command=lambda: sort(table, col, not descending))
