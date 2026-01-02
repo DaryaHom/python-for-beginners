@@ -1,0 +1,7 @@
+{
+    "python.testing.pytestArgs": [
+        "7-re", "10-interim_assessment/1_task"
+    ],
+    "python.testing.unittestEnabled": false,
+    "python.testing.pytestEnabled": true
+}

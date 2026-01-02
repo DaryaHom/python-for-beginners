@@ -1,0 +1,6 @@
+,Column_1,Column_2,Column_3
+Row_1,1,120,8
+Row_2,0,-1,null
+Row_3,0,None,8
+Row_4,,-1,8
+Row_5,no,Non,Nan
