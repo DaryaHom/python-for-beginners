@@ -19,3 +19,176 @@
 6. В системе сдачи приложить:  
     · ссылку на репозиторий на GitHub (репозиторий – публичный, не делаем приватный);  
     · архив с локальным репозиторием (вся папка проекта целиком). 
+
+# Инструкция по работе с командами Git
+## Что такое Git
+**Git** — распределённая система контроля версий, разработанная Линусом Торвальдсом в 2005 году для управления исходным кодом ядра Linux. Сегодня Git — стандарт индустрии разработки ПО.
+
+## Зачем нужен Git
+- Хранит полную историю изменений проекта
+- Позволяет видеть, кто, когда и что изменил
+- Поддерживает ветвление и слияние
+- Даёт возможность отката к любому состоянию
+- Каждый разработчик имеет локальную копию репозитория
+
+## Установка
+Windows: https://git-scm.com  
+macOS:
+```sh
+brew install git  
+```
+Linux:
+```sh
+sudo apt install git
+```
+
+## Первоначальная настройка
+```sh
+git config --global user.name "Ваше Имя"
+git config --global user.email "your@email.com"
+git config --list
+```
+
+## Создание репозитория
+Создать новый:
+```sh
+git init
+```
+
+Клонировать существующий:
+```sh
+git clone https://github.com/username/repository.git
+```
+
+## Основные команды
+Проверка статуса:
+```sh
+git status
+```
+
+Добавление файлов в индекс:
+```sh
+git add filename.txt
+git add .
+git add *.js
+```
+
+Создание коммита:
+```sh
+git commit -m "Описание изменений"
+```
+
+## Просмотр истории
+```sh
+git log
+git log --oneline
+git log --graph
+git show <commit-hash>
+```
+
+Просмотр изменений:
+```sh
+git diff
+git diff --staged
+```
+
+## Ветки
+Ветка — указатель на коммит.
+По умолчанию: main (или master)
+
+Просмотр веток:
+```sh
+git branch
+git branch -a
+```
+
+Создание ветки:
+```sh
+git branch feature-name
+```
+
+Переключение:
+```sh
+git checkout feature-name
+git switch feature-name
+```
+
+Создание и переключение:
+```sh
+git checkout -b feature-name
+git switch -c feature-name
+```
+
+Слияние:
+```sh
+git checkout main
+git merge feature-name
+```
+
+Удаление:
+```sh
+git branch -d feature-name
+git branch -D feature-name
+```
+
+## Merge vs Rebase
+Merge:
+- сохраняет историю
+- создаёт коммит слияния
+- подходит для командной работы
+
+Rebase:
+- переписывает историю
+- делает её линейной
+- подходит для личных веток
+
+## Удалённые репозитории
+Добавление:
+```sh
+git remote add origin https://github.com/username/repo.git
+```
+
+Просмотр:
+```sh
+git remote -v
+```
+
+Отправка:
+```sh
+git push origin main
+git push -u origin feature-name
+```
+
+Получение:
+```sh
+git fetch origin
+git pull origin main
+```
+
+## Fork и Clone
+Clone — локальная копия репозитория  
+Fork — копия репозитория в вашем аккаунте (GitHub/GitLab)
+
+## Конфликты
+Причины:
+- изменения одних и тех же строк
+- удаление файла, изменённого в другой ветке
+
+Разрешение:
+```sh
+git status
+```
+Маркеры конфликта: <<<<<<< HEAD  
+Ваши изменения: =======  
+Чужие изменения: >>>>>>> feature-branch  
+Завершение:
+```sh
+git add file.txt
+git commit -m "Resolve merge conflict"
+```
+Полезные команды:
+```sh
+git merge --abort
+git log --merge
+```
+
