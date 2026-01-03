@@ -191,4 +191,131 @@ git commit -m "Resolve merge conflict"
 git merge --abort
 git log --merge
 ```
+## Дополнительные полезные команды на рвзные случаи жизни
+### Больше не отслеживать изменения файла (аналог .gitignore)
+```sh
+git update-index --assume-unchanged ./cmd/license
+```
 
+#### Убрать файл из индекса неотслеживаемых файлов
+```sh
+git update-index --no-assume-unchanged ./cmd/license
+```
+
+### Коммит не в ту ветку:
+#### Отменить последний коммит, но оставить изменения доступными
+```sh
+git reset HEAD~ --soft
+git stash
+```
+
+#### Переключаемся на нужную ветку.
+```sh
+git checkout name-of-the-correct-branch
+git stash pop
+```
+
+#### Добавьте конкретные файл или не парьтесь и закиньте все сразу.
+```sh
+git add .
+git commit -m «Тут будет ваше сообщение»
+```
+Теперь ваши изменения в нужной ветке.  
+
+Многие в такой ситуации предлагают использовать **cherry-pick**, так что можете выбрать, что вам больше по душе.
+```sh
+git checkout name-of-the-correct-branch
+```
+#### Берём последний коммит из мастера.
+```sh
+git cherry-pick master
+```
+#### Удаляем его из мастера.
+```sh
+git checkout master
+git reset HEAD~ --hard
+```
+
+### Перенести изменения в другую ветку через файл:
+Вначале делаем git diff и сохраняем все в файл
+```sh
+git diff > mychange.diff
+```
+Cам файл сохраняем в надежное место, ну мало чего.
+Теперь можно удалить локальные изменения:
+```sh
+git checkout .
+```
+
+Перейти на нужную ветку:
+```sh
+git checkout develop-release-13.x
+```
+
+И там "накатить изменения".
+```sh
+git apply mychange.diff
+```
+
+### Откатить уже опубликованный коммит 
+#### Отменяем последний коммит, доступный по указателю HEAD
+```sh
+git revert HEAD
+```
+#### фиксируем отмену в новом коммите
+```sh
+git commit -m'reverted the last commit'
+```
+
+Если вы абсолютно уверены, что вы запушили «лишний» коммит в собственную ветку, что её никто не замержил в стабильную ветку и просто так не начал разработку от последнего вашего коммита, можно откатить локальную ветку к предыдущему коммиту, а потом переписать изменения в удалённой:
+```sh
+git reset HEAD~
+git push -f
+```
+
+### Игнорировать изменения режима файла в git:
+```sh
+git config core.Filemode false
+```
+
+### Переименовать ветку:
+```sh
+git branch -m oldname newname
+git push origin HEAD
+```
+
+### Удалить ветку:
+```Bash
+git push -d <remote_name> <branchname>   # Delete remote
+git branch -d <branchname>               # Delete local
+```
+
+### Отменить несколько коммитов в одном:
+```bash
+git revert --no-commit D
+git revert --no-commit C
+git revert --no-commit B
+git commit -m "the commit message for all of them"
+```
+
+### Stash
+```sh
+git stash -u # Отложить неотслеживаемые файлы
+git stash save "add style to our site"
+git stash -p # отложить отдельные изменения. Команда будет выполняться для каждого измененного участка кода, запрашивая подтверждение на откладывание
+git stash list # просмотреть список созданных наборов
+git stash show # просмотреть сводные данные по набору отложенных изменений
+git stash show -p # просмотреть разницу между наборами изменений
+git stash pop stash@{2}
+git stash drop stash@{1}
+git stash clear # Очистка
+git stash apply # применить изменения к рабочей копии, не удаляя их из набора отложенных
+# При проверке нужно указать, применялась ли методология оценки и отметить отсутствие reflog.
+```
+
+### Worktree
+```sh
+cd /projects/my-project
+git worktree add /projects/wt.my-project feat/some-feature 
+git worktree remove /projects/wt.my-project
+```
