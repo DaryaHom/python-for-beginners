@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import messagebox
 from tkinter import ttk
-from models import Operation
+from models import Subscription
 from storage import load_operations, save_operations
 from utils import validate_date, validate_amount
 from analysis import operations_to_df,plot_pie_by_category
@@ -71,7 +71,7 @@ class FinanceApp:
             return
 
         try:
-            op = Operation(
+            op = Subscription(
                 float(amount),
                 self.category_entry.get(),
                 date,

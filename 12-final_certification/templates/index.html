@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Мои подписки</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        h1 { color: #333; }
+        .subscription { 
+            border: 1px solid #ccc; 
+            padding: 10px; 
+            margin-bottom: 10px; 
+            background-color: #f9f9f9;
+        }
+        .price { font-weight: bold; color: green; }
+        a { color: #0066cc; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+
+    <h1>Мои подписки</h1>
+
+    <!-- Кнопка "Добавить новую подписку" -->
+    <p><a href="/add-subscription">➕ Добавить новую подписку</a></p>
+
+    <!-- Список подписок -->
+    {% for sub in subscriptions %}
+        <div class="subscription">
+            <h3>{{ sub.title }}</h3>
+            <p><strong>Категория:</strong> {{ sub.category }}</p>
+            
+            {% if sub.price %}
+                <p class="price">Цена: {{ sub.price }} ₽</p>
+            {% endif %}
+            
+            {% if sub.price_daily %}
+                <p class="price">Ежедневно: {{ sub.price_daily }} ₽/день</p>
+            {% endif %}
+            
+            <p><strong>Действует с:</strong> {{ sub.start_date }}</p>
+            <p><strong>До:</strong> {{ sub.end_date }}</p>
+            
+            {% if sub.descr %}
+                <p><em>{{ sub.descr }}</em></p>
+            {% endif %}
+        </div>
+    {% endfor %}
+
+</body>
+</html>

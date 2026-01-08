@@ -16,7 +16,7 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: 1234
-      POSTGRES_DB: te1
+      POSTGRES_DB: subscriptions
     ports:
       - "5432:5432"
 

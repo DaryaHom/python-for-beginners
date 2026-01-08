@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Новая подписка</title>
+    <style>
+        .error { color: red; margin-top: 0.2em; }
+        label { display: block; margin-top: 1em; }
+        input, select, textarea {
+            width: 100%;
+            padding: 0.4em;
+            margin-top: 0.3em;
+            box-sizing: border-box;
+        }
+        button {
+            margin-top: 1.5em;
+            padding: 0.6em 1.2em;
+        }
+    </style>
+</head>
+<body>
+    <h1>Добавить новую подписку</h1>
+    <form method="post">
+        <label for="user">Пользователь:</label>
+        {{ form.user(size=32) }}
+        {% for error in form.user.errors %}
+            <div class="error">{{ error }}</div>
+        {% endfor %}
+
+        <label for="title">Название:</label>
+        {{ form.title(size=64) }}
+        {% for error in form.title.errors %}
+            <div class="error">{{ error }}</div>
+        {% endfor %}
+
+        <label for="category">Категория:</label>
+        {{ form.category() }}
+        {% for error in form.category.errors %}
+            <div class="error">{{ error }}</div>
+        {% endfor %}
+
+        <label for="start_date">Дата начала (ГГГГ-ММ-ДД):</label>
+        {{ form.start_date() }}
+        {% for error in form.start_date.errors %}
+            <div class="error">{{ error }}</div>
+        {% endfor %}
+
+        <label for="end_date">Дата окончания (ГГГГ-ММ-ДД):</label>
+        {{ form.end_date() }}
+        {% for error in form.end_date.errors %}
+            <div class="error">{{ error }}</div>
+        {% endfor %}
+
+        <label for="price">Цена (всего, например, 999.99):</label>
+        {{ form.price(placeholder="Опционально, если указана ежедневная цена") }}
+        {% for error in form.price.errors %}
+            <div class="error">{{ error }}</div>
+        {% endfor %}
+
+        <label for="price_daily">Ежедневная цена (например, 3.50):</label>
+        {{ form.price_daily(placeholder="Опционально, если указана общая цена") }}
+        {% for error in form.price_daily.errors %}
+            <div class="error">{{ error }}</div>
+        {% endfor %}
+
+        <label for="descr">Описание:</label>
+        {{ form.descr(rows=3) }}
+        {% for error in form.descr.errors %}
+            <div class="error">{{ error }}</div>
+        {% endfor %}
+
+        {{ form.submit() }}
+    </form>
+
+    {% if success %}
+        <p style="color: green; margin-top: 1em;">Подписка успешно добавлена!</p>
+    {% endif %}
+</body>
+</html>
