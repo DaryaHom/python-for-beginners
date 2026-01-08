@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Аналитика расходов</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        h1 { color: #333; }
+        .card {
+            border: 1px solid #ccc;
+            padding: 15px;
+            margin-bottom: 20px;
+            background-color: #f9f9f9;
+            max-width: 600px;
+        }
+    </style>
+</head>
+<body>
+
+<h1>📊 Аналитика подписок</h1>
+
+    <!-- Кнопка возврата -->
+    <p><a href="/">← Вернуться к списку подписок</a></p>
+
+    <!-- Форма выбора периода -->
+    <form method="get">
+        <label>
+            С:
+            <input type="date" name="start" value="{{ start }}">
+        </label>
+
+        <label>
+            По:
+            <input type="date" name="end" value="{{ end }}">
+        </label>
+
+        <button type="submit">Показать</button>
+    </form>
+
+    <!-- Сводная информация -->
+    <div class="block">
+        <h2>💰 Суммарные расходы</h2>
+
+        {% if total is not none %}
+            <p class="summary">
+                Всего за период: {{ total }} ₽
+            </p>
+        {% else %}
+            <p>Нет данных за выбранный период.</p>
+        {% endif %}
+    </div>
+
+    <!-- График по категориям -->
+    <div class="block">
+        <h2>📂 Расходы по категориям</h2>
+
+        {% if category_chart %}
+            <img src="{{ url_for('static', filename=category_chart) }}"
+                 alt="Расходы по категориям">
+        {% else %}
+            <p>Нет данных для построения графика.</p>
+        {% endif %}
+    </div>
+
+</body>
+</html>

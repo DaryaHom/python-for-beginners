@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Новая подписка</title>
+    <title>Отредактировать подписку</title>
     <style>
         .error { color: red; margin-top: 0.2em; }
         label { display: block; margin-top: 1em; }
@@ -18,7 +18,7 @@
     </style>
 </head>
 <body>
-    <h1>Новая подписка</h1>
+    <h1>Отредактировать подписку</h1>
     <form method="post">
         <label for="user">Пользователь:</label>
         {{ form.user(size=32) }}
@@ -75,7 +75,7 @@
     <p><a href="/">← Вернуться к списку подписок</a></p>
 
     {% if success %}
-        <p style="color: green; margin-top: 1em;">Подписка успешно добавлена!</p>
+        <p style="color: green; margin-top: 1em;">Подписка успешно обновлена!</p>
     {% endif %}
 </body>
 </html>

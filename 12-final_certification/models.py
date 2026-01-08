@@ -47,7 +47,7 @@ class Subscription:
             start_date: str, 
             end_date: str, 
             category: str, 
-            id: int | None = None,
+            id: str | None = None,
             price: Decimal | None = None, 
             price_daily: Decimal | None = None, 
             descr = '',
@@ -92,6 +92,10 @@ class Subscription:
         
         if not isinstance(descr, str):
             raise TypeError("Описание должно быть строкой")
+        
+        if id:
+            if not id.isdigit():
+                raise ValueError("id должен быть представлен цифрами")
         
         self.id = id        
         self.user = user

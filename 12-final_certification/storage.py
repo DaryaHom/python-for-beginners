@@ -41,7 +41,43 @@ def save_subscription(s: Subscription):
         conn.commit()
     except Exception as e:  # TODO
         raise e
-        
+
+def get_subscription(id: str) -> Subscription:
+    """
+    Возвращает Subscription по id.
+    """
+
+    try:
+        cur.execute(
+            "SELECT " \
+                "username, " \
+                "title, " \
+                "start_date, " \
+                "end_date, " \
+                "category, " \
+                "price, " \
+                "price_daily, " \
+                "descr " \
+            "FROM subscriptions " \
+            "WHERE id = %s", id)
+        data = cur.fetchone()
+    except Exception as e:  # TODO
+        raise e
+    try:
+        (user, title, start_date, end_date, category, price, price_daily, descr) = data
+        return Subscription(
+                    id=id,
+                    user=user,
+                    title=title,
+                    start_date=start_date.strftime('%Y-%m-%d'),
+                    end_date=end_date.strftime('%Y-%m-%d'),
+                    category=category,
+                    price=price.quantize(Decimal('1.00')),
+                    price_daily=price_daily.quantize(Decimal('1.00')),
+                    descr=descr,
+                )
+    except Exception as e: # TODO
+        raise e   
 
 def get_subscriptions() -> list[Subscription]:
     """
@@ -69,7 +105,7 @@ def get_subscriptions() -> list[Subscription]:
         for (id, user, title, start_date, end_date, category, price, price_daily, descr) in data:
             subs.append(
                 Subscription(
-                    id=id,
+                    id=str(id),
                     user=user,
                     title=title,
                     start_date=start_date.strftime('%Y-%m-%d'),
@@ -83,10 +119,48 @@ def get_subscriptions() -> list[Subscription]:
         return subs
     except Exception as e: # TODO
         raise e
-
-def delete_subscription(id: int):
+    
+def update_subscription(s: Subscription):
+    """
+    Изменить существующую подписку
+    """
+    if not s:
+        raise ValueError()
+        return
+    elif not s.user:
+        raise ValueError()
+    elif not s.title:
+        raise ValueError()
+    elif not s.start_date:
+        raise ValueError()
+    elif not s.end_date:
+        raise ValueError()
+    elif not s.price:
+        raise ValueError()
+    
     try:
-        cur.execute("DELETE FROM subscriptions WHERE id = %s", str(id))
+        cur.execute(
+            "UPDATE subscriptions \
+            SET " \
+                "username = %s, " \
+                "title = %s, " \
+                "start_date = %s, " \
+                "end_date = %s, " \
+                "category = %s, " \
+                "price = %s, " \
+                "price_daily = %s, " \
+                "descr = %s \
+            WHERE id = %s",
+            (s.user, s.title, s.start_date, s.end_date, s.category, s.price, s.price_daily, s.descr, s.id)
+        )
+        conn.commit()
+    except Exception as e:  # TODO
+        raise e
+        
+
+def delete_subscription(id: str):
+    try:
+        cur.execute("DELETE FROM subscriptions WHERE id = %s", id)
         conn.commit()
     except Exception as e:  # TODO
         raise e

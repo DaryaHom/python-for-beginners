@@ -20,14 +20,19 @@
 
     <h1>Мои подписки</h1>
 
-    <!-- Кнопка "Добавить новую подписку" -->
-    <p><a href="/add-subscription">➕ Добавить новую подписку</a></p>
+    <!-- Кнопка "Добавить подписку" -->
+    <p><a href="/add-subscription">➕ Добавить подписку</a></p>
 
+    <p>
+        <a href="/analysis">📊 Аналитика расходов</a>
+    </p>
+    
     <!-- Список подписок -->
     {% for sub in subscriptions %}
         <div class="subscription">
             <h3>{{ sub.title }}</h3>
             <p><strong>Категория:</strong> {{ sub.category }}</p>
+            <p><strong>Пользователь:</strong> {{ sub.user }}</p>
             
             {% if sub.price %}
                 <p class="price">Цена: {{ sub.price }} ₽</p>
@@ -37,16 +42,20 @@
                 <p class="price">Ежедневно: {{ sub.price_daily }} ₽/день</p>
             {% endif %}
             
-            <p><strong>Действует с:</strong> {{ sub.start_date }}</p>
-            <p><strong>До:</strong> {{ sub.end_date }}</p>
+            <p><strong>Действует с:</strong> {{ sub.start_date.strftime('%Y-%m-%d') }}</p>
+            <p><strong>До:</strong> {{ sub.end_date.strftime('%Y-%m-%d') }}</p>
             
             {% if sub.descr %}
                 <p><em>{{ sub.descr }}</em></p>
             {% endif %}
 
+            <form action="/change-subscription/{{ sub.id }}">
+                <input type="submit" value="📝 Изменить" />
+            </form>
+
             <form method="post" action="/delete/{{ sub.id }}" style="display: inline;">
                 <button type="submit" onclick="return confirm('Точно удалить?')">
-                    🗑️ Удалить
+                    🗑️ Удалить   
                 </button>
             </form>
         </div>
