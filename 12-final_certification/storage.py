@@ -52,6 +52,7 @@ def get_subscriptions() -> list[Subscription]:
     try:
         cur.execute(
             "SELECT " \
+                "id, " \
                 "username, " \
                 "title, " \
                 "start_date, " \
@@ -65,9 +66,10 @@ def get_subscriptions() -> list[Subscription]:
     except Exception as e:  # TODO
         raise e
     try:
-        for (user, title, start_date, end_date, category, price, price_daily, descr) in data:
+        for (id, user, title, start_date, end_date, category, price, price_daily, descr) in data:
             subs.append(
                 Subscription(
+                    id=id,
                     user=user,
                     title=title,
                     start_date=start_date.strftime('%Y-%m-%d'),
@@ -84,7 +86,7 @@ def get_subscriptions() -> list[Subscription]:
 
 def delete_subscription(id: int):
     try:
-        cur.execute("DELETE FROM subscriptions WHERE id = %s", id)
+        cur.execute("DELETE FROM subscriptions WHERE id = %s", str(id))
         conn.commit()
     except Exception as e:  # TODO
         raise e

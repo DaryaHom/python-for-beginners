@@ -43,6 +43,12 @@
             {% if sub.descr %}
                 <p><em>{{ sub.descr }}</em></p>
             {% endif %}
+
+            <form method="post" action="/delete/{{ sub.id }}" style="display: inline;">
+                <button type="submit" onclick="return confirm('Точно удалить?')">
+                    🗑️ Удалить
+                </button>
+            </form>
         </div>
     {% endfor %}
 

@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, flash
 
 from forms import SubscriptionForm
 from models import Subscription
-from storage import save_subscription, get_subscriptions
+from storage import save_subscription, get_subscriptions, delete_subscription
 
 app = Flask(__name__)
 
@@ -17,6 +17,7 @@ def add_subscription():
     if request.method == 'POST' and form.validate():
         try:
             sub = Subscription(
+                id=None,
                 user=form.user.data.strip(),
                 title=form.title.data.strip(),
                 start_date=form.start_date.data.strip(),
@@ -33,3 +34,12 @@ def add_subscription():
 
     return render_template('add_subscription.html', form=form)
 
+@app.route("/delete/<int:id>", methods=['GET', 'POST'])
+def del_subscription(id):
+    if request.method == 'POST':
+        try:
+            delete_subscription(id)
+        except:
+            pass #TODO
+    subs = get_subscriptions()
+    return render_template('index.html', subscriptions=subs)
