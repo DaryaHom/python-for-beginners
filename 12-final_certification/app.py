@@ -1,3 +1,12 @@
+"""
+Транспортный уровень приложения. 
+
+Модуль содержит роуты для:
+- управления подписками (CRUD);
+- отображения перечня подписок;
+- отображения аналитики расходов за выбранный период.
+"""
+
 from flask import Flask, render_template, request, flash
 from forms import SubscriptionForm
 from models import Subscription
@@ -20,13 +29,13 @@ app = Flask(__name__)
 
 def build_subscription(form: SubscriptionForm, id: str | None = None) -> Subscription:
     """
-    Build a Subscription domain object from a validated form.
+    Формирует Subscription (entity) из провалидированной формы.
 
-    :param form: Validated subscription form
+    :param form: Валидная форма подписки
     :type form: SubscriptionForm
-    :param id: Subscription identifier (None for new objects)
+    :param id: Идентификатор подписки
     :type id: str | None
-    :return: Subscription entity
+    :return: Subscription
     :rtype: Subscription
     """
     return Subscription(
@@ -45,9 +54,9 @@ def build_subscription(form: SubscriptionForm, id: str | None = None) -> Subscri
 @app.route("/")
 def index():
     """
-    Render the main page with the list of subscriptions.
+    Рендерит главную страницу с перечнем подписок.
 
-    :return: Rendered index page
+    :return: index.html
     """
     subs = get_subscriptions()
     return render_template('index.html', subscriptions=subs)
@@ -56,14 +65,14 @@ def index():
 @app.route('/add-subscription', methods=['GET', 'POST'])
 def add_subscription():
     """
-    Handle subscription creation.
+    Обработчик создания новой подписки.
 
     GET:
-        Render empty subscription form.
+        Рендерит пустую форму создания подписки.
     POST:
-        Validate input and persist new subscription.
+        Валидирует ввод и создаёт новую подписку.
 
-    :return: Rendered page
+    :return: add_subscription.html
     """
     form = SubscriptionForm(request.form)
     if request.method == 'POST' and form.validate():
@@ -79,16 +88,17 @@ def add_subscription():
 @app.route('/change-subscription/<string:id>', methods=['GET', 'POST'])
 def change_subscription(id):
     """
-    Edit an existing subscription.
+    Редактирует существующую подписку, заменяя её данные на новые.
+    По сути - PUT-метод.
 
     GET:
-        Pre-fill form with existing subscription data.
+        Возвращает форму, предзаполненную данными подписки.
     POST:
-        Update subscription after validation.
+        Валидирует ввод и обновляет подписку.
 
-    :param sub_id: Subscription identifier
+    :param sub_id: Идентификатор подписки
     :type sub_id: str
-    :return: Rendered page
+    :return: change_subscription.html
     """
     form = SubscriptionForm(request.form)
     if request.method == 'GET':
@@ -124,11 +134,11 @@ def change_subscription(id):
 @app.route("/delete/<string:id>", methods=['POST'])
 def del_subscription(id):
     """
-    Delete a subscription.
+    Удаляет подписку.
 
-    :param sub_id: Subscription identifier
+    :param sub_id: Идентификатор подписки
     :type sub_id: str
-    :return: Rendered index page
+    :return: index.html
     """
     try:
         delete_subscription(id)
@@ -140,13 +150,13 @@ def del_subscription(id):
 @app.route("/analysis")
 def analysis_page():
     """
-    Render analytics page.
+    Отображает страницу аналитики.
 
-    Accepts optional query parameters:
-    - start: start date (YYYY-MM-DD)
-    - end: end date (YYYY-MM-DD)
+    Принимает опциональные query-параметры:
+    - start: дата начала периода (YYYY-MM-DD)
+    - end: дата окончания периода (YYYY-MM-DD)
 
-    :return: Rendered analytics page
+    :return: analysis.html
     """
     start = request.args.get("start")
     end = request.args.get("end")

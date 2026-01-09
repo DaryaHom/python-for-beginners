@@ -1,18 +1,12 @@
 """
-Flask application for subscription tracking and analysis.
+Приложение для трекинга подписочных сервисов и аналитики расходов
 
-This module contains route handlers for:
-- managing subscriptions (CRUD);
-- displaying subscription list;
-- performing financial analysis over a selected period.
-
-The application uses:
-- Flask for web routing;
-- WTForms for form validation;
-- PostgreSQL storage;
-- pandas-based analytics.
+Приложение использует:
+- Flask для web-роутинга;
+- WTForms для валидации форм;
+- PostgreSQL хранилище;
+- pandas для построения аналитики.
 """
-
 from app import app
 from config import SERVER_CONFIG
 

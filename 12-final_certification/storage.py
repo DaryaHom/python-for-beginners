@@ -12,13 +12,12 @@ conn = psycopg2.connect(
     port=DB_CONFIG['port']
 )
 
-
 cur = conn.cursor()
 
 
 def _row_to_subscription(row: dict) -> Subscription:
     """
-    Convert database row to Subscription object.
+    Преобразует row базы данных в объект Subscription.
 
     :param row: Database row
     :type row: dict
@@ -41,7 +40,7 @@ def _row_to_subscription(row: dict) -> Subscription:
 
 def create_subscription(s: Subscription):
     """
-    Persist a new subscription in the database.
+    Создаёт новую подписку в БД
 
     :param s: Subscription entity
     :type s: Subscription
@@ -57,15 +56,15 @@ def create_subscription(s: Subscription):
 
 def get_subscription(id: str) -> Subscription:
     """
-    Retrieve a subscription by its ID.
+    ВОзвращает подписку по её ID.
 
-    :param id: Subscription identifier
+    :param id: Subscription ID
     :type id: str
 
     :returns: Subscription entity
     :rtype: Subscription
 
-    :raises ValueError: if subscription does not exist
+    :raises ValueError: если подписка не найдена
     """
 
     cur.execute(
@@ -91,9 +90,9 @@ def get_subscription(id: str) -> Subscription:
 
 def get_subscriptions() -> list[Subscription]:
     """
-    Retrieve all subscriptions from the database.
+    Возвращает все подписки из БД.
 
-    :returns: List of subscriptions
+    :returns: Перечень подписок
     :rtype: list[Subscription]
     """
 
@@ -116,7 +115,7 @@ def get_subscriptions() -> list[Subscription]:
     
 def update_subscription(s: Subscription):
     """
-    Update an existing subscription.
+    Обновляет существующую подписку.
 
     :param s: Subscription entity
     :type s: Subscription
@@ -141,9 +140,9 @@ def update_subscription(s: Subscription):
 
 def delete_subscription(id: str):
     """
-    Delete subscription by ID.
+    Удаляет подписку по ID.
 
-    :param id: Subscription identifier
+    :param id: Subscription ID
     :type id: str
     """
     cur.execute("DELETE FROM subscriptions WHERE id = {0}".format(id))

@@ -13,5 +13,5 @@ SERVER_CONFIG = {
     'host': os.getenv('APP_HOST', 'localhost'),
     'port': os.getenv('APP_PORT', 8081),
     'secret_key': os.getenv('APP_SECRET_KEY', secrets.token_urlsafe(32)),
-    'debug': True,
+    'debug': False,
 }
