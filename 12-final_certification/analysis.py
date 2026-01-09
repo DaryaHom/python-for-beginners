@@ -20,7 +20,7 @@
     - matplotlib
     - storage.get_subscriptions
 """
-
+import logging
 import pandas as pd
 import matplotlib.pyplot as plt
 from storage import get_subscriptions
@@ -152,7 +152,7 @@ def plot_category_pie(start: str, end: str):
     data = expenses_by_category(start, end)
 
     if data.empty:
-        print('Нет данных для визуализации')
+        logging.info('Нет данных для визуализации')
         return
 
     plt.figure(figsize=(6, 6))

@@ -1,7 +1,7 @@
 from models import Subscription
 from decimal import Decimal
 from config import DB_CONFIG
-import psycopg2
+import psycopg2, logging
 
 
 conn = psycopg2.connect(
@@ -44,15 +44,20 @@ def create_subscription(s: Subscription):
 
     :param s: Subscription entity
     :type s: Subscription
+    :raises RuntimeError: при ошибке БД
     """
-    cur.execute(
-        "INSERT INTO subscriptions \
-            (username, title, start_date, end_date, category, price, price_daily, descr) \
-        VALUES (%s, %s, %s, %s, %s, %s, %s, %s)",
-        (s.user, s.title, s.start_date, s.end_date, s.category, s.price, s.price_daily, s.descr)
-    )
-    conn.commit()
-
+    try:
+        cur.execute(
+            "INSERT INTO subscriptions \
+                (username, title, start_date, end_date, category, price, price_daily, descr) \
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s)",
+            (s.user, s.title, s.start_date, s.end_date, s.category, s.price, s.price_daily, s.descr)
+        )
+        conn.commit()
+    except psycopg2.Error as e:
+        conn.rollback()
+        logging.error(f"Не удалось создать подписку: {e}")
+        raise RuntimeError(f'Не удалось создать подписку: {e}') from e
 
 def get_subscription(id: str) -> Subscription:
     """
@@ -64,26 +69,31 @@ def get_subscription(id: str) -> Subscription:
     :returns: Subscription entity
     :rtype: Subscription
 
+    :raises RuntimeError: при ошибке БД
     :raises ValueError: если подписка не найдена
     """
 
-    cur.execute(
-        "SELECT " \
-            "id, " \
-            "username, " \
-            "title, " \
-            "start_date, " \
-            "end_date, " \
-            "category, " \
-            "price, " \
-            "price_daily, " \
-            "descr " \
-        "FROM subscriptions " \
-        "WHERE id = {0}".format(id))
-    data = cur.fetchone()
+    try:
+        cur.execute(
+            "SELECT " \
+                "id, " \
+                "username, " \
+                "title, " \
+                "start_date, " \
+                "end_date, " \
+                "category, " \
+                "price, " \
+                "price_daily, " \
+                "descr " \
+            "FROM subscriptions " \
+            "WHERE id = {0}".format(id))
+        data = cur.fetchone()
+    except psycopg2.Error as e:
+        logging.error(f'Не удалось получить подписку: {e}')
+        raise RuntimeError(f'Не удалось получить подписку: {e}') from e   
 
     if not data:
-        raise ValueError("Subscription not found")
+        raise ValueError('Подписка не найдена')
    
     return _row_to_subscription(data)
 
@@ -94,21 +104,26 @@ def get_subscriptions() -> list[Subscription]:
 
     :returns: Перечень подписок
     :rtype: list[Subscription]
+    :raises RuntimeError: при ошибке БД
     """
 
-    cur.execute(
-        "SELECT " \
-            "id, " \
-            "username, " \
-            "title, " \
-            "start_date, " \
-            "end_date, " \
-            "category, " \
-            "price, " \
-            "price_daily, " \
-            "descr " \
-        "FROM subscriptions ORDER BY id")
-    data = cur.fetchall()
+    try:
+        cur.execute(
+            "SELECT " \
+                "id, " \
+                "username, " \
+                "title, " \
+                "start_date, " \
+                "end_date, " \
+                "category, " \
+                "price, " \
+                "price_daily, " \
+                "descr " \
+            "FROM subscriptions ORDER BY id")
+        data = cur.fetchall()
+    except psycopg2.Error as e:
+        logging.error(f'Не удалось получить подписки: {e}')
+        raise RuntimeError(f'Не удалось получить подписки: {e}') from e   
 
     return [_row_to_subscription(row) for row in data]
 
@@ -119,23 +134,29 @@ def update_subscription(s: Subscription):
 
     :param s: Subscription entity
     :type s: Subscription
+    :raises RuntimeError: при ошибке БД
     """
     
-    cur.execute(
-        "UPDATE subscriptions \
-        SET " \
-            "username = %s, " \
-            "title = %s, " \
-            "start_date = %s, " \
-            "end_date = %s, " \
-            "category = %s, " \
-            "price = %s, " \
-            "price_daily = %s, " \
-            "descr = %s \
-        WHERE id = %s",
-        (s.user, s.title, s.start_date, s.end_date, s.category, s.price, s.price_daily, s.descr, s.id)
-    )
-    conn.commit()
+    try:
+        cur.execute(
+            "UPDATE subscriptions \
+            SET " \
+                "username = %s, " \
+                "title = %s, " \
+                "start_date = %s, " \
+                "end_date = %s, " \
+                "category = %s, " \
+                "price = %s, " \
+                "price_daily = %s, " \
+                "descr = %s \
+            WHERE id = %s",
+            (s.user, s.title, s.start_date, s.end_date, s.category, s.price, s.price_daily, s.descr, s.id)
+        )
+        conn.commit()
+    except psycopg2.Error as e:
+        conn.rollback()
+        logging.error(f'Не удалось обновить подписку: {e}')
+        raise RuntimeError(f'Не удалось обновить подписку: {e}') from e 
         
 
 def delete_subscription(id: str):
@@ -144,7 +165,13 @@ def delete_subscription(id: str):
 
     :param id: Subscription ID
     :type id: str
+    :raises RuntimeError: при ошибке БД
     """
-    cur.execute("DELETE FROM subscriptions WHERE id = {0}".format(id))
-    conn.commit()
+    try:
+        cur.execute("DELETE FROM subscriptions WHERE id = {0}".format(id))
+        conn.commit()
+    except psycopg2.Error as e:
+        conn.rollback()
+        logging.error(f'Не удалось удалить подписку: {e}')
+        raise RuntimeError(f'Не удалось удалить подписку: {e}') from e 
     

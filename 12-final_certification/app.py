@@ -23,7 +23,6 @@ from analysis import (
     plot_category_pie
 )
 
-
 app = Flask(__name__)
 
 
@@ -58,7 +57,11 @@ def index():
 
     :return: index.html
     """
-    subs = get_subscriptions()
+    try:
+        subs = get_subscriptions()
+    except RuntimeError as e:
+        flash(str(e), 'error')
+
     return render_template('index.html', subscriptions=subs)
 
 
@@ -79,7 +82,7 @@ def add_subscription():
         try:
             create_subscription(build_subscription(form, None))
             return index()
-        except (ValueError, TypeError) as e:
+        except (ValueError, TypeError, RuntimeError) as e:
             flash(str(e), 'error')
 
     return render_template('add_subscription.html', form=form)
@@ -117,7 +120,7 @@ def change_subscription(id):
                     'descr': sub.descr
                 }
             )
-        except Exception as e:
+        except RuntimeError as e:
             flash(f'Subscription not found {str(e)}', 'error')
             return index()
 
@@ -142,7 +145,7 @@ def del_subscription(id):
     """
     try:
         delete_subscription(id)
-    except Exception as e:
+    except RuntimeError as e:
         flash(f'Unable to delete subscription: {str(e)}', 'error')
     return index()
 

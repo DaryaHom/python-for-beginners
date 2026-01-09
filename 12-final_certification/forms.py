@@ -56,6 +56,5 @@ class SubscriptionForm(Form):
                     self.price_daily.errors.append(error_msg)
                     return False
             except (ValueError, AttributeError, TypeError):
-                # Если есть ошибки в датах, пропускаем эту проверку
                 pass
         return True
