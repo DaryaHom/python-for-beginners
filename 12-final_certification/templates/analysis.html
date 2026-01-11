@@ -1,21 +1,6 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Аналитика расходов</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 20px; }
-        h1 { color: #333; }
-        .card {
-            border: 1px solid #ccc;
-            padding: 15px;
-            margin-bottom: 20px;
-            background-color: #f9f9f9;
-            max-width: 600px;
-        }
-    </style>
-</head>
-<body>
-
+{% extends "base.html" %}
+{% block title %}Аналитика подписок{% endblock %}
+{% block content %}
 <h1>📊 Аналитика подписок</h1>
 
     <!-- Кнопка возврата -->
@@ -59,6 +44,4 @@
             <p>Нет данных для построения графика.</p>
         {% endif %}
     </div>
-
-</body>
-</html>
+{% endblock %}

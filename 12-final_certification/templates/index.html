@@ -1,23 +1,6 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Мои подписки</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 20px; }
-        h1 { color: #333; }
-        .subscription { 
-            border: 1px solid #ccc; 
-            padding: 10px; 
-            margin-bottom: 10px; 
-            background-color: #f9f9f9;
-        }
-        .price { font-weight: bold; color: green; }
-        a { color: #0066cc; text-decoration: none; }
-        a:hover { text-decoration: underline; }
-    </style>
-</head>
-<body>
-
+{% extends "base.html" %}
+{% block title %}Мои подписки{% endblock %}
+{% block content %}
     <h1>Мои подписки</h1>
 
     <!-- Кнопка "Добавить подписку" -->
@@ -49,9 +32,7 @@
                 <p><em>{{ sub.descr }}</em></p>
             {% endif %}
 
-            <form action="/change-subscription/{{ sub.id }}">
-                <input type="submit" value="📝 Изменить" />
-            </form>
+            <a href="/change-subscription/{{ sub.id }}">📝 Изменить</a>
 
             <form method="post" action="/delete/{{ sub.id }}" style="display: inline;">
                 <button type="submit" onclick="return confirm('Точно удалить?')">
@@ -60,6 +41,4 @@
             </form>
         </div>
     {% endfor %}
-
-</body>
-</html>
+{% endblock %}

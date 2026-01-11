@@ -42,7 +42,7 @@ def index():
             flash(str(e), 'error')
     except RuntimeError as e:
         # Логируем ошибку БД для админа, но не показываем детали пользователю
-        logging.exception(f'Не удалось получить подписки: {e}')
+        logging.exception('Не удалось получить подписки')
         flash('Не удалось получить подписки', 'error')
 
     return render_template('index.html', subscriptions=subs)
@@ -68,7 +68,7 @@ def add_subscription():
         except (ValueError, TypeError) as e:
             flash(str(e), 'error')
         except RuntimeError as e:
-            logging.exception(f'Не удалось создать подписку: {e}')
+            logging.exception('Не удалось создать подписку')
             flash('Не удалось создать подписку', 'error')
 
     return render_template('add_subscription.html', form=form)
@@ -107,9 +107,10 @@ def change_subscription(id):
                 }
             )
         except (ValueError, TypeError) as e:
+            logging.exception('Не удалось получить подписку или она некорректна')
             flash(str(e), 'error')
         except RuntimeError as e:
-            logging.exception(f'Не удалось получить подписку для редактирования: {e}')
+            logging.exception('Не удалось получить подписку для редактирования')
             flash('Не удалось получить подписку для редактирования', 'error')
             return redirect(url_for('index'))
 
@@ -118,9 +119,10 @@ def change_subscription(id):
             update_subscription(build_subscription(form, id))
             return redirect(url_for('index'))
         except (ValueError, TypeError) as e:
+            logging.exception('Не удалось обновить подписку')
             flash(str(e), 'error')
         except RuntimeError as e:
-            logging.exception(f'Не удалось обновить подписку: {e}')
+            logging.exception('Не удалось обновить подписку')
             flash('Не удалось обновить подписку', 'error')
             
     return render_template('change_subscription.html', form=form)
@@ -138,7 +140,7 @@ def del_subscription(id):
     try:
         delete_subscription(id)
     except RuntimeError as e:
-        logging.exception(f'Не удалось удалить подписку: {e}')
+        logging.exception('Не удалось удалить подписку')
         flash('Не удалось удалить подписку', 'error')
     return redirect(url_for('index'))
 
@@ -165,7 +167,7 @@ def analysis_page():
         total=total_expenses(start, end)
         category_chart=plot_category_pie(start, end)
     except AnalyticsError as e:
-        logging.exception(f'Не удалось построить аналитику: {e}')
+        logging.exception('Не удалось построить аналитику')
         flash('Не удалось построить аналитику', 'error')
     
     return render_template(

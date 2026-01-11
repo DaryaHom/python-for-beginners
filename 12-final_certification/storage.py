@@ -1,9 +1,13 @@
+import psycopg2
 from models import Subscription
 from config import DB_CONFIG
-import psycopg2
+from psycopg2.pool import SimpleConnectionPool
+from contextlib import contextmanager
+from typing import Generator
 
-
-conn = psycopg2.connect(
+pool = SimpleConnectionPool(
+    minconn=DB_CONFIG['minconn'],
+    maxconn=DB_CONFIG['maxconn'],
     host=DB_CONFIG['host'],
     database=DB_CONFIG['database'], 
     user=DB_CONFIG['user'],
@@ -11,7 +15,16 @@ conn = psycopg2.connect(
     port=DB_CONFIG['port']
 )
 
-cur = conn.cursor()
+@contextmanager
+def get_connection() -> Generator:
+    """
+    Контекстный менеджер для получения соединения из пула
+    """
+    conn = pool.getconn()
+    try:
+        yield conn
+    finally:
+        pool.putconn(conn)
 
 
 def _row_to_subscription(row: dict) -> Subscription:
@@ -23,7 +36,7 @@ def _row_to_subscription(row: dict) -> Subscription:
 
     :returns: Subscription entity
     :rtype: Subscription
-    """
+    """    
     return Subscription(
         id=str(row[0]),
         user=row[1],
@@ -46,13 +59,15 @@ def create_subscription(s: Subscription):
     :raises RuntimeError: при ошибке БД
     """
     try:
-        cur.execute(
-            "INSERT INTO subscriptions \
-                (username, title, start_date, end_date, category, price, price_daily, descr) \
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s)",
-            (s.user, s.title, s.start_date, s.end_date, s.category, s.price, s.price_daily, s.descr)
-        )
-        conn.commit()
+        with get_connection() as conn:
+            with conn.cursor() as cur:
+                cur.execute(
+                    "INSERT INTO subscriptions \
+                        (username, title, start_date, end_date, category, price, price_daily, descr) \
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s)",
+                    (s.user, s.title, s.start_date, s.end_date, s.category, s.price, s.price_daily, s.descr)
+                )
+                conn.commit()
     except psycopg2.Error as e:
         conn.rollback()
         raise RuntimeError(f'Не удалось создать подписку: {e}') from e
@@ -68,31 +83,40 @@ def get_subscription(id: str) -> Subscription:
     :rtype: Subscription
 
     :raises RuntimeError: при ошибке БД
-    :raises ValueError: если подписка не найдена
+    :raises ValueError: если подписка не найдена или некорректна
+    :raises TypeError: если подписка не найдена или некорректна
     """
 
     try:
-        cur.execute(
-            "SELECT " \
-                "id, " \
-                "username, " \
-                "title, " \
-                "start_date, " \
-                "end_date, " \
-                "category, " \
-                "price, " \
-                "price_daily, " \
-                "descr " \
-            "FROM subscriptions " \
-            "WHERE id = {0}".format(id))
-        data = cur.fetchone()
+        with get_connection() as conn:
+            with conn.cursor() as cur:
+                cur.execute(
+                    "SELECT " \
+                        "id, " \
+                        "username, " \
+                        "title, " \
+                        "start_date, " \
+                        "end_date, " \
+                        "category, " \
+                        "price, " \
+                        "price_daily, " \
+                        "descr " \
+                    "FROM subscriptions " \
+                    "WHERE id = %s", id)
+                data = cur.fetchone()
     except psycopg2.Error as e:
         raise RuntimeError(f'Не удалось получить подписку: {e}') from e   
 
     if not data:
         raise ValueError('Подписка не найдена')
-   
-    return _row_to_subscription(data)
+    
+    try:
+        sub = _row_to_subscription(data)
+    except ValueError as e:
+        raise ValueError('Подписка содержит некорректные данные: {e}') from e
+    except TypeError as e:
+        raise TypeError('Подписка содержит некорректные данные: {e}') from e
+    return sub
 
 
 def get_subscriptions() -> list[Subscription]:
@@ -106,23 +130,31 @@ def get_subscriptions() -> list[Subscription]:
     """
 
     try:
-        cur.execute(
-            "SELECT " \
-                "id, " \
-                "username, " \
-                "title, " \
-                "start_date, " \
-                "end_date, " \
-                "category, " \
-                "price, " \
-                "price_daily, " \
-                "descr " \
-            "FROM subscriptions ORDER BY id")
-        data = cur.fetchall()
+        with get_connection() as conn:
+            with conn.cursor() as cur:
+                cur.execute(
+                    "SELECT " \
+                        "id, " \
+                        "username, " \
+                        "title, " \
+                        "start_date, " \
+                        "end_date, " \
+                        "category, " \
+                        "price, " \
+                        "price_daily, " \
+                        "descr " \
+                    "FROM subscriptions ORDER BY id")
+                data = cur.fetchall()
     except psycopg2.Error as e:
         raise RuntimeError(f'Не удалось получить подписки: {e}') from e   
 
-    return [_row_to_subscription(row) for row in data]
+    try:
+        res = [_row_to_subscription(row) for row in data]
+    except ValueError as e:
+        raise ValueError('Подписки содержат некорректные данные: {e}') from e
+    except TypeError as e:
+        raise TypeError('Подписки содержат некорректные данные: {e}') from e
+    return res
 
     
 def update_subscription(s: Subscription):
@@ -136,21 +168,23 @@ def update_subscription(s: Subscription):
     """
     
     try:
-        cur.execute(
-            "UPDATE subscriptions \
-            SET " \
-                "username = %s, " \
-                "title = %s, " \
-                "start_date = %s, " \
-                "end_date = %s, " \
-                "category = %s, " \
-                "price = %s, " \
-                "price_daily = %s, " \
-                "descr = %s \
-            WHERE id = %s",
-            (s.user, s.title, s.start_date, s.end_date, s.category, s.price, s.price_daily, s.descr, s.id)
-        )
-        conn.commit()
+        with get_connection() as conn:
+            with conn.cursor() as cur:
+                cur.execute(
+                    "UPDATE subscriptions \
+                    SET " \
+                        "username = %s, " \
+                        "title = %s, " \
+                        "start_date = %s, " \
+                        "end_date = %s, " \
+                        "category = %s, " \
+                        "price = %s, " \
+                        "price_daily = %s, " \
+                        "descr = %s \
+                    WHERE id = %s",
+                    (s.user, s.title, s.start_date, s.end_date, s.category, s.price, s.price_daily, s.descr, s.id)
+                )
+                conn.commit()
     except psycopg2.Error as e:
         conn.rollback()
         raise RuntimeError(f'Не удалось обновить подписку: {e}') from e 
@@ -165,8 +199,10 @@ def delete_subscription(id: str):
     :raises RuntimeError: при ошибке БД
     """
     try:
-        cur.execute("DELETE FROM subscriptions WHERE id = {0}".format(id))
-        conn.commit()
+        with get_connection() as conn:
+            with conn.cursor() as cur:
+                cur.execute("DELETE FROM subscriptions WHERE id = %s", id)
+                conn.commit()
     except psycopg2.Error as e:
         conn.rollback()
         raise RuntimeError(f'Не удалось удалить подписку: {e}') from e 

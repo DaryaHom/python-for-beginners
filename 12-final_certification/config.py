@@ -7,6 +7,8 @@ DB_CONFIG = {
     'password': os.getenv('DB_PASSWORD', '1234'),
     'host': os.getenv('DB_HOST', 'localhost'),
     'port': os.getenv('DB_PORT', 5432),
+    'minconn': os.getenv('DB_MINCONN', 1),
+    'maxconn': os.getenv('DB_MAXCONN', 10),
 }
 
 SERVER_CONFIG = {
