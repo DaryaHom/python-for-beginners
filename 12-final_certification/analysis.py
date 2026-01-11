@@ -25,6 +25,12 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from storage import get_subscriptions
 
+class AnalyticsError(Exception):
+    """
+    Исключение, возникающее при ошибках в модуле аналитики.
+    """
+    pass
+
 
 def subscriptions_to_df() -> pd.DataFrame:
     """
@@ -35,21 +41,30 @@ def subscriptions_to_df() -> pd.DataFrame:
 
     :returns: DataFrame со всеми подписками
     :rtype: pandas.DataFrame
-    """
-    subs = get_subscriptions()
-    rows = []
 
-    for s in subs:
-        rows.append({
-            'id': s.id,
-            'user': s.user,
-            'title': s.title,
-            'category': s.category,
-            'start_date': pd.to_datetime(s.start_date),
-            'end_date': pd.to_datetime(s.end_date),
-            'price': float(s.price) if s.price else None,
-            'price_daily': float(s.price_daily) if s.price_daily else None,
-        })
+    :raises: AnalyticsError
+    """
+
+    try:
+        subs = get_subscriptions()
+    except (TypeError, ValueError, RuntimeError) as e:
+        raise AnalyticsError('Не удалось загрузить данные о подписках') from e
+    
+    rows = []
+    try: 
+        for s in subs:
+            rows.append({
+                'id': s.id,
+                'user': s.user,
+                'title': s.title,
+                'category': s.category,
+                'start_date': pd.to_datetime(s.start_date),
+                'end_date': pd.to_datetime(s.end_date),
+                'price': float(s.price) if s.price else None,
+                'price_daily': float(s.price_daily) if s.price_daily else None,
+            })
+    except (ValueError, TypeError) as e:
+        raise AnalyticsError(f'Некорректная подписка, id={s.id}') from e
 
     return pd.DataFrame(rows)
 
@@ -66,16 +81,25 @@ def expenses_for_period(start: str, end: str) -> pd.DataFrame:
     :type start: str
     :param end: дата окончания периода
     :type end: str
+
     :returns: DataFrame с добавленным столбцом `cost`
     :rtype: pandas.DataFrame
+
+    :raises: AnalyticsError
     """
-    df = subscriptions_to_df()
+    try:
+        df = subscriptions_to_df()
+    except AnalyticsError as e:
+        raise e 
 
     if df.empty:
         return df
 
-    start_dt = pd.to_datetime(start)
-    end_dt = pd.to_datetime(end)
+    try:
+        start_dt = pd.to_datetime(start)
+        end_dt = pd.to_datetime(end)
+    except (ValueError, TypeError) as e:
+        raise AnalyticsError("Неверный формат даты. Ожидается YYYY-MM-DD.") from e
 
     # Переопределяем датафрейм, так, чтобы он включал только те подписки,
     # которые относятся к указанному периоду времени
@@ -106,10 +130,16 @@ def expenses_by_category(start: str, end: str) -> pd.Series:
     :type start: str
     :param end: дата окончания периода
     :type end: str
+
     :returns: Перечень расходов по категориям
     :rtype: pandas.Series
+
+    :raises: AnalyticsError
     """
-    df = expenses_for_period(start, end)
+    try:
+        df = expenses_for_period(start, end)
+    except AnalyticsError as e:
+        raise e 
 
     if df.empty:
         return pd.Series(dtype=float)
@@ -129,10 +159,16 @@ def total_expenses(start: str, end: str) -> float:
     :type start: str
     :param end: дата окончания периода
     :type end: str
+
     :returns: общая сумма расходов
     :rtype: float
+
+    :raises: AnalyticsError
     """
-    df = expenses_for_period(start, end)
+    try:
+        df = expenses_for_period(start, end)
+    except AnalyticsError as e:
+        raise e 
     return float(df['cost'].sum()) if not df.empty else 0.0
 
 
@@ -147,7 +183,9 @@ def plot_category_pie(start: str, end: str):
     :type start: str
     :param end: дата окончания периода
     :type end: str
+
     :returns: None
+    :raises: AnalyticsError
     """
     data = expenses_by_category(start, end)
 
@@ -155,9 +193,13 @@ def plot_category_pie(start: str, end: str):
         logging.info('Нет данных для визуализации')
         return
 
-    plt.figure(figsize=(6, 6))
-    data.plot.pie(autopct='%1.1f%%')
-    plt.title('Структура расходов по категориям')
-    plt.tight_layout()
-    plt.ylabel("")
-    plt.show()
+    try:
+        plt.figure(figsize=(6, 6))
+        data.plot.pie(autopct='%1.1f%%')
+        plt.title('Структура расходов по категориям')
+        plt.tight_layout()
+        plt.ylabel("")
+        plt.show()
+    except Exception as e:
+        raise AnalyticsError('Не удалось построить график') from e
+

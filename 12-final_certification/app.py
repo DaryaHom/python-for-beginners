@@ -6,8 +6,8 @@
 - отображения перечня подписок;
 - отображения аналитики расходов за выбранный период.
 """
-
-from flask import Flask, render_template, request, flash
+import logging
+from flask import Flask, render_template, request, flash, redirect, url_for
 from forms import SubscriptionForm
 from utils import build_subscription
 
@@ -20,7 +20,8 @@ from storage import (
 )
 from analysis import (
     total_expenses,
-    plot_category_pie
+    plot_category_pie,
+    AnalyticsError
 )
 
 app = Flask(__name__)
@@ -30,12 +31,19 @@ def index():
     """
     Рендерит главную страницу с перечнем подписок.
 
-    :return: index.html
+    :returns: index.html
     """
+    subs = []
     try:
         subs = get_subscriptions()
+    except (ValueError, TypeError) as e:
+        # Отправляем пользователю ошибку as is, т.к. 
+        # для исправления ему нужен контекст
+            flash(str(e), 'error')
     except RuntimeError as e:
-        flash(str(e), 'error')
+        # Логируем ошибку БД для админа, но не показываем детали пользователю
+        logging.exception(f'Не удалось получить подписки: {e}')
+        flash('Не удалось получить подписки', 'error')
 
     return render_template('index.html', subscriptions=subs)
 
@@ -50,15 +58,18 @@ def add_subscription():
     POST:
         Валидирует ввод и создаёт новую подписку.
 
-    :return: add_subscription.html
+    :returns: add_subscription.html
     """
     form = SubscriptionForm(request.form)
     if request.method == 'POST' and form.validate():
         try:
             create_subscription(build_subscription(form, None))
-            return index()
-        except (ValueError, TypeError, RuntimeError) as e:
+            return redirect(url_for('index'))
+        except (ValueError, TypeError) as e:
             flash(str(e), 'error')
+        except RuntimeError as e:
+            logging.exception(f'Не удалось создать подписку: {e}')
+            flash('Не удалось создать подписку', 'error')
 
     return render_template('add_subscription.html', form=form)
 
@@ -76,7 +87,8 @@ def change_subscription(id):
 
     :param sub_id: Идентификатор подписки
     :type sub_id: str
-    :return: change_subscription.html
+
+    :returns: change_subscription.html
     """
     form = SubscriptionForm(request.form)
     if request.method == 'GET':
@@ -84,7 +96,6 @@ def change_subscription(id):
             sub = get_subscription(id)
             form = SubscriptionForm(
                 data={
-                    'id': id,
                     'user': sub.user,
                     'title': sub.title,
                     'category': sub.category,
@@ -95,16 +106,22 @@ def change_subscription(id):
                     'descr': sub.descr
                 }
             )
+        except (ValueError, TypeError) as e:
+            flash(str(e), 'error')
         except RuntimeError as e:
-            flash(f'Subscription not found {str(e)}', 'error')
-            return index()
+            logging.exception(f'Не удалось получить подписку для редактирования: {e}')
+            flash('Не удалось получить подписку для редактирования', 'error')
+            return redirect(url_for('index'))
 
     if request.method == 'POST' and form.validate():
         try:
             update_subscription(build_subscription(form, id))
-            return index()
+            return redirect(url_for('index'))
         except (ValueError, TypeError) as e:
             flash(str(e), 'error')
+        except RuntimeError as e:
+            logging.exception(f'Не удалось обновить подписку: {e}')
+            flash('Не удалось обновить подписку', 'error')
             
     return render_template('change_subscription.html', form=form)
 
@@ -121,8 +138,9 @@ def del_subscription(id):
     try:
         delete_subscription(id)
     except RuntimeError as e:
-        flash(f'Unable to delete subscription: {str(e)}', 'error')
-    return index()
+        logging.exception(f'Не удалось удалить подписку: {e}')
+        flash('Не удалось удалить подписку', 'error')
+    return redirect(url_for('index'))
 
 
 @app.route("/analysis")
@@ -139,13 +157,21 @@ def analysis_page():
     start = request.args.get("start")
     end = request.args.get("end")
 
+    total, category_chart = 0, None
     if not (start and end):
-        return render_template("analysis.html", total=0)
+        return render_template("analysis.html", total=total)
+    
+    try:
+        total=total_expenses(start, end),
+        category_chart=plot_category_pie(start, end)
+    except AnalyticsError as e:
+        logging.exception(f'Не удалось построить аналитику: {e}')
+        flash('Не удалось построить аналитику', 'error')
     
     return render_template(
         "analysis.html",
         start=start,
         end=end,
-        total=total_expenses(start, end),
-        category_chart=plot_category_pie(start, end),
+        total=total,
+        category_chart=category_chart,
     )

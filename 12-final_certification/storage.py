@@ -1,7 +1,6 @@
 from models import Subscription
-from decimal import Decimal
 from config import DB_CONFIG
-import psycopg2, logging
+import psycopg2
 
 
 conn = psycopg2.connect(
@@ -56,7 +55,6 @@ def create_subscription(s: Subscription):
         conn.commit()
     except psycopg2.Error as e:
         conn.rollback()
-        logging.error(f"Не удалось создать подписку: {e}")
         raise RuntimeError(f'Не удалось создать подписку: {e}') from e
 
 def get_subscription(id: str) -> Subscription:
@@ -89,7 +87,6 @@ def get_subscription(id: str) -> Subscription:
             "WHERE id = {0}".format(id))
         data = cur.fetchone()
     except psycopg2.Error as e:
-        logging.error(f'Не удалось получить подписку: {e}')
         raise RuntimeError(f'Не удалось получить подписку: {e}') from e   
 
     if not data:
@@ -104,6 +101,7 @@ def get_subscriptions() -> list[Subscription]:
 
     :returns: Перечень подписок
     :rtype: list[Subscription]
+
     :raises RuntimeError: при ошибке БД
     """
 
@@ -122,7 +120,6 @@ def get_subscriptions() -> list[Subscription]:
             "FROM subscriptions ORDER BY id")
         data = cur.fetchall()
     except psycopg2.Error as e:
-        logging.error(f'Не удалось получить подписки: {e}')
         raise RuntimeError(f'Не удалось получить подписки: {e}') from e   
 
     return [_row_to_subscription(row) for row in data]
@@ -134,6 +131,7 @@ def update_subscription(s: Subscription):
 
     :param s: Subscription entity
     :type s: Subscription
+
     :raises RuntimeError: при ошибке БД
     """
     
@@ -155,7 +153,6 @@ def update_subscription(s: Subscription):
         conn.commit()
     except psycopg2.Error as e:
         conn.rollback()
-        logging.error(f'Не удалось обновить подписку: {e}')
         raise RuntimeError(f'Не удалось обновить подписку: {e}') from e 
         
 
@@ -172,6 +169,5 @@ def delete_subscription(id: str):
         conn.commit()
     except psycopg2.Error as e:
         conn.rollback()
-        logging.error(f'Не удалось удалить подписку: {e}')
         raise RuntimeError(f'Не удалось удалить подписку: {e}') from e 
     
