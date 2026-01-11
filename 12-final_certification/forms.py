@@ -1,4 +1,4 @@
-from wtforms import Form, StringField, DecimalField, SelectField, TextAreaField, SubmitField, DateField
+from wtforms import Form, StringField, DecimalField, SelectField, TextAreaField, SubmitField
 from wtforms.validators import DataRequired, Optional, ValidationError
 
 from models import Category

@@ -9,7 +9,7 @@
 
 from flask import Flask, render_template, request, flash
 from forms import SubscriptionForm
-from models import Subscription
+from utils import build_subscription
 
 from storage import (
     create_subscription, 
@@ -24,31 +24,6 @@ from analysis import (
 )
 
 app = Flask(__name__)
-
-
-def build_subscription(form: SubscriptionForm, id: str | None = None) -> Subscription:
-    """
-    Формирует Subscription (entity) из провалидированной формы.
-
-    :param form: Валидная форма подписки
-    :type form: SubscriptionForm
-    :param id: Идентификатор подписки
-    :type id: str | None
-    :return: Subscription
-    :rtype: Subscription
-    """
-    return Subscription(
-        id=id,
-        user=form.user.data.strip(),
-        title=form.title.data.strip(),
-        start_date=form.start_date.data.strip(),
-        end_date=form.end_date.data.strip(),
-        category=form.category.data,
-        price=form.price.data,
-        price_daily=form.price_daily.data,
-        descr=form.descr.data.strip(),
-    )
-
 
 @app.route("/")
 def index():

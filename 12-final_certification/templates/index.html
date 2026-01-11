@@ -35,11 +35,11 @@
             <p><strong>Пользователь:</strong> {{ sub.user }}</p>
             
             {% if sub.price %}
-                <p class="price">Цена: {{ sub.price }} ₽</p>
+                <p class="price">Цена: {{ '{:.2f}'.format(sub.price) }} ₽</p>
             {% endif %}
             
             {% if sub.price_daily %}
-                <p class="price">Ежедневно: {{ sub.price_daily }} ₽/день</p>
+                <p class="price">Ежедневно: {{ '{:.2f}'.format(sub.price_daily) }} ₽/день</p>
             {% endif %}
             
             <p><strong>Действует с:</strong> {{ sub.start_date.strftime('%Y-%m-%d') }}</p>

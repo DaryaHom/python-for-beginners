@@ -1,6 +1,9 @@
 {
     "python.testing.pytestArgs": [
-        "7-re", "10-interim_assessment/1_task", "12-final_certification"
+        "7-re", 
+        "10-interim_assessment/1_task", 
+        "12-final_certification",
+        "12-final_certification/tests"
     ],
     "python.testing.unittestEnabled": false,
     "python.testing.pytestEnabled": true

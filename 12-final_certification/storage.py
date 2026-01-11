@@ -29,11 +29,11 @@ def _row_to_subscription(row: dict) -> Subscription:
         id=str(row[0]),
         user=row[1],
         title=row[2],
-        start_date=row[3].strftime('%Y-%m-%d'),
-        end_date=row[4].strftime('%Y-%m-%d'),
+        start_date=row[3],
+        end_date=row[4],
         category=row[5],
-        price=row[6].quantize(Decimal('1.00')),
-        price_daily=row[7].quantize(Decimal('1.00')),
+        price=row[6],
+        price_daily=row[7],
         descr=row[8],
     )
 
