@@ -20,7 +20,7 @@
     - matplotlib
     - storage.get_subscriptions
 """
-import logging
+import io, base64, logging
 import pandas as pd
 import matplotlib.pyplot as plt
 from storage import get_subscriptions
@@ -169,10 +169,11 @@ def total_expenses(start: str, end: str) -> float:
         df = expenses_for_period(start, end)
     except AnalyticsError as e:
         raise e 
+    
     return float(df['cost'].sum()) if not df.empty else 0.0
 
 
-def plot_category_pie(start: str, end: str):
+def plot_category_pie(start: str, end: str) -> str:
     """
     Строит круговую диаграмму расходов по категориям.
 
@@ -184,14 +185,15 @@ def plot_category_pie(start: str, end: str):
     :param end: дата окончания периода
     :type end: str
 
-    :returns: None
+    :returns: Диаграмма в base64
+    :rtype: str
     :raises: AnalyticsError
     """
     data = expenses_by_category(start, end)
 
     if data.empty:
         logging.info('Нет данных для визуализации')
-        return
+        return ''
 
     try:
         plt.figure(figsize=(6, 6))
@@ -199,7 +201,15 @@ def plot_category_pie(start: str, end: str):
         plt.title('Структура расходов по категориям')
         plt.tight_layout()
         plt.ylabel("")
-        plt.show()
+
+         # Сохраняем в буфер
+        buf = io.BytesIO()
+        plt.savefig(buf, format='png')
+        plt.close()  # Важно закрыть фигуру
+        buf.seek(0)
+         # Кодируем в base64 для HTML
+        img_base64 = base64.b64encode(buf.read()).decode('utf-8')
+        return f"data:image/png;base64,{img_base64}"
     except Exception as e:
         raise AnalyticsError('Не удалось построить график') from e
 

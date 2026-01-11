@@ -40,7 +40,7 @@
     <div class="block">
         <h2>💰 Суммарные расходы</h2>
 
-        {% if total is not none %}
+        {% if total %}
             <p class="summary">
                 Всего за период: {{ '{:.2f}'.format(total) }} ₽
             </p>
@@ -54,8 +54,7 @@
         <h2>📂 Расходы по категориям</h2>
 
         {% if category_chart %}
-            <img src="{{ url_for('static', filename=category_chart) }}"
-                 alt="Расходы по категориям">
+            <img src="{{ category_chart }}" alt="Расходы по категориям">
         {% else %}
             <p>Нет данных для построения графика.</p>
         {% endif %}

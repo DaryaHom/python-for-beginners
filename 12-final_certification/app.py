@@ -152,7 +152,7 @@ def analysis_page():
     - start: дата начала периода (YYYY-MM-DD)
     - end: дата окончания периода (YYYY-MM-DD)
 
-    :return: analysis.html
+    :returns: analysis.html
     """
     start = request.args.get("start")
     end = request.args.get("end")
@@ -162,7 +162,7 @@ def analysis_page():
         return render_template("analysis.html", total=total)
     
     try:
-        total=total_expenses(start, end),
+        total=total_expenses(start, end)
         category_chart=plot_category_pie(start, end)
     except AnalyticsError as e:
         logging.exception(f'Не удалось построить аналитику: {e}')
