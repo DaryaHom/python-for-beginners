@@ -42,6 +42,9 @@
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>s</strong> (<a class="reference internal" href="models.html#models.Subscription" title="models.Subscription"><em>Subscription</em></a>) – Subscription entity</p>
 </dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>RuntimeError</strong> – при ошибке БД</p>
+</dd>
 </dl>
 </dd></dl>
 
@@ -53,7 +56,16 @@
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>id</strong> (<em>str</em>) – Subscription ID</p>
 </dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>RuntimeError</strong> – при ошибке БД</p>
+</dd>
 </dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="storage.get_connection">
+<span class="sig-prename descclassname"><span class="pre">storage.</span></span><span class="sig-name descname"><span class="pre">get_connection</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Generator</span></span></span><a class="headerlink" href="#storage.get_connection" title="Link to this definition">¶</a></dt>
+<dd><p>Контекстный менеджер для получения соединения из пула</p>
 </dd></dl>
 
 <dl class="py function">
@@ -71,7 +83,11 @@
 <dd class="field-odd"><p><a class="reference internal" href="models.html#models.Subscription" title="models.Subscription">Subscription</a></p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>ValueError</strong> – если подписка не найдена</p>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>RuntimeError</strong> – при ошибке БД</p></li>
+<li><p><strong>ValueError</strong> – если подписка не найдена или некорректна</p></li>
+<li><p><strong>TypeError</strong> – если подписка не найдена или некорректна</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
@@ -87,6 +103,13 @@
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>list[<a class="reference internal" href="models.html#models.Subscription" title="models.Subscription">Subscription</a>]</p>
 </dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>RuntimeError</strong> – при ошибке БД</p></li>
+<li><p><strong>ValueError</strong> – если подписки содержат некорректные данные</p></li>
+<li><p><strong>TypeError</strong> – если подписки содержат некорректные данные</p></li>
+</ul>
+</dd>
 </dl>
 </dd></dl>
 
@@ -97,6 +120,9 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>s</strong> (<a class="reference internal" href="models.html#models.Subscription" title="models.Subscription"><em>Subscription</em></a>) – Subscription entity</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>RuntimeError</strong> – при ошибке БД</p>
 </dd>
 </dl>
 </dd></dl>
@@ -133,7 +159,7 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="overview.html">Обзор проекта</a></li>
 <li class="toctree-l1"><a class="reference internal" href="usage.html">Установка и использование</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="modules.html">12-final_certification</a><ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">Модули</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="analysis.html">analysis module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="app.html">app module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="config.html">config module</a></li>
@@ -149,7 +175,7 @@
 <h3>Related Topics</h3>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
-  <li><a href="modules.html">12-final_certification</a><ul>
+  <li><a href="modules.html">Модули</a><ul>
       <li>Previous: <a href="models.html" title="previous chapter">models module</a></li>
   </ul></li>
   </ul></li>

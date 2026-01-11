@@ -38,6 +38,7 @@
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="analysis.html">analysis module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="analysis.html#analysis.AnalyticsError"><code class="docutils literal notranslate"><span class="pre">AnalyticsError</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="analysis.html#analysis.expenses_by_category"><code class="docutils literal notranslate"><span class="pre">expenses_by_category()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="analysis.html#analysis.expenses_for_period"><code class="docutils literal notranslate"><span class="pre">expenses_for_period()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="analysis.html#analysis.plot_category_pie"><code class="docutils literal notranslate"><span class="pre">plot_category_pie()</span></code></a></li>
@@ -48,7 +49,6 @@
 <li class="toctree-l1"><a class="reference internal" href="app.html">app module</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="app.html#app.add_subscription"><code class="docutils literal notranslate"><span class="pre">add_subscription()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="app.html#app.analysis_page"><code class="docutils literal notranslate"><span class="pre">analysis_page()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="app.html#app.build_subscription"><code class="docutils literal notranslate"><span class="pre">build_subscription()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="app.html#app.change_subscription"><code class="docutils literal notranslate"><span class="pre">change_subscription()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="app.html#app.del_subscription"><code class="docutils literal notranslate"><span class="pre">del_subscription()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="app.html#app.index"><code class="docutils literal notranslate"><span class="pre">index()</span></code></a></li>
@@ -101,12 +101,17 @@
 <li class="toctree-l3"><a class="reference internal" href="models.html#models.Category.has_value"><code class="docutils literal notranslate"><span class="pre">Category.has_value()</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="models.html#models.PriceCalculator"><code class="docutils literal notranslate"><span class="pre">PriceCalculator</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="models.html#models.PriceCalculator.calculate_price"><code class="docutils literal notranslate"><span class="pre">PriceCalculator.calculate_price()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="models.html#models.Subscription"><code class="docutils literal notranslate"><span class="pre">Subscription</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="storage.html">storage module</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="storage.html#storage.create_subscription"><code class="docutils literal notranslate"><span class="pre">create_subscription()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="storage.html#storage.delete_subscription"><code class="docutils literal notranslate"><span class="pre">delete_subscription()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="storage.html#storage.get_connection"><code class="docutils literal notranslate"><span class="pre">get_connection()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="storage.html#storage.get_subscription"><code class="docutils literal notranslate"><span class="pre">get_subscription()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="storage.html#storage.get_subscriptions"><code class="docutils literal notranslate"><span class="pre">get_subscriptions()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="storage.html#storage.update_subscription"><code class="docutils literal notranslate"><span class="pre">update_subscription()</span></code></a></li>

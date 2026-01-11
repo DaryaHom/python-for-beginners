@@ -56,6 +56,7 @@ def create_subscription(s: Subscription):
 
     :param s: Subscription entity
     :type s: Subscription
+
     :raises RuntimeError: при ошибке БД
     """
     try:
@@ -127,6 +128,8 @@ def get_subscriptions() -> list[Subscription]:
     :rtype: list[Subscription]
 
     :raises RuntimeError: при ошибке БД
+    :raises ValueError: если подписки содержат некорректные данные
+    :raises TypeError: если подписки содержат некорректные данные
     """
 
     try:

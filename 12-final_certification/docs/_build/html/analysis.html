@@ -55,6 +55,13 @@
 </ul>
 </dd>
 </dl>
+<dl class="py exception">
+<dt class="sig sig-object py" id="analysis.AnalyticsError">
+<em class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">analysis.</span></span><span class="sig-name descname"><span class="pre">AnalyticsError</span></span><a class="headerlink" href="#analysis.AnalyticsError" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<p>Исключение, возникающее при ошибках в модуле аналитики.</p>
+</dd></dl>
+
 <dl class="py function">
 <dt class="sig sig-object py" id="analysis.expenses_by_category">
 <span class="sig-prename descclassname"><span class="pre">analysis.</span></span><span class="sig-name descname"><span class="pre">expenses_by_category</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pandas.Series</span></span></span><a class="headerlink" href="#analysis.expenses_by_category" title="Link to this definition">¶</a></dt>
@@ -74,6 +81,9 @@
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>pandas.Series</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#analysis.AnalyticsError" title="analysis.AnalyticsError"><strong>AnalyticsError</strong></a> – Если не удалось расчитать стоимость за период</p>
 </dd>
 </dl>
 </dd></dl>
@@ -99,12 +109,18 @@
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>pandas.DataFrame</p>
 </dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference internal" href="#analysis.AnalyticsError" title="analysis.AnalyticsError"><strong>AnalyticsError</strong></a> – Если не удалось преобразовать подписки в df</p></li>
+<li><p><a class="reference internal" href="#analysis.AnalyticsError" title="analysis.AnalyticsError"><strong>AnalyticsError</strong></a> – Если не удалось преобразовать время в datetime</p></li>
+</ul>
+</dd>
 </dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="analysis.plot_category_pie">
-<span class="sig-prename descclassname"><span class="pre">analysis.</span></span><span class="sig-name descname"><span class="pre">plot_category_pie</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#analysis.plot_category_pie" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">analysis.</span></span><span class="sig-name descname"><span class="pre">plot_category_pie</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#analysis.plot_category_pie" title="Link to this definition">¶</a></dt>
 <dd><p>Строит круговую диаграмму расходов по категориям.</p>
 <p>Диаграмма отражает процентное распределение
 расходов за выбранный период времени.</p>
@@ -116,7 +132,13 @@
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>None</p>
+<dd class="field-even"><p>Диаграмма в base64</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#analysis.AnalyticsError" title="analysis.AnalyticsError"><strong>AnalyticsError</strong></a> – Если не удалось построить график</p>
 </dd>
 </dl>
 </dd></dl>
@@ -133,6 +155,9 @@
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>pandas.DataFrame</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#analysis.AnalyticsError" title="analysis.AnalyticsError"><strong>AnalyticsError</strong></a> – Не удалось загрузить данные о подписках или данные некорректны</p>
 </dd>
 </dl>
 </dd></dl>
@@ -153,6 +178,9 @@
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>float</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#analysis.AnalyticsError" title="analysis.AnalyticsError"><strong>AnalyticsError</strong></a> – Если не удалось расчитать стоимость за период</p>
 </dd>
 </dl>
 </dd></dl>

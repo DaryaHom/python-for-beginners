@@ -44,7 +44,7 @@ def subscriptions_to_df() -> pd.DataFrame:
     :returns: DataFrame со всеми подписками
     :rtype: pandas.DataFrame
 
-    :raises: AnalyticsError
+    :raises AnalyticsError: Не удалось загрузить данные о подписках или данные некорректны
     """
 
     try:
@@ -87,7 +87,8 @@ def expenses_for_period(start: str, end: str) -> pd.DataFrame:
     :returns: DataFrame с добавленным столбцом `cost`
     :rtype: pandas.DataFrame
 
-    :raises: AnalyticsError
+    :raises AnalyticsError: Если не удалось преобразовать подписки в df
+    :raises AnalyticsError: Если не удалось преобразовать время в datetime
     """
     try:
         df = subscriptions_to_df()
@@ -136,7 +137,7 @@ def expenses_by_category(start: str, end: str) -> pd.Series:
     :returns: Перечень расходов по категориям
     :rtype: pandas.Series
 
-    :raises: AnalyticsError
+    :raises AnalyticsError: Если не удалось расчитать стоимость за период
     """
     try:
         df = expenses_for_period(start, end)
@@ -165,7 +166,7 @@ def total_expenses(start: str, end: str) -> float:
     :returns: общая сумма расходов
     :rtype: float
 
-    :raises: AnalyticsError
+    :raises AnalyticsError: Если не удалось расчитать стоимость за период
     """
     try:
         df = expenses_for_period(start, end)
@@ -189,7 +190,7 @@ def plot_category_pie(start: str, end: str) -> str:
 
     :returns: Диаграмма в base64
     :rtype: str
-    :raises: AnalyticsError
+    :raises AnalyticsError: Если не удалось построить график
     """
     data = expenses_by_category(start, end)
 

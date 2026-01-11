@@ -36,6 +36,6 @@
 .. code-block:: bash
 
    cd ..
-   main.py
+   python main.py
 
 6. Открыть в браузере. Адрес по умолчанию - http://127.0.0.1:8081
